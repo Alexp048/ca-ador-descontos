@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InstaAffiliShop</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💼</text></svg>">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                    primary: '#ff8a8a',
+                    secondary: '#ffb3b3',
+}
+                }
+            }
+        }
+    </script>
+    <style>
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
+        }
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-thumb {
+                        background-color: #ff8a8a;
+border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="bg-[#ffd6d6] transition-colors duration-200">
+<!-- Header Section -->
+    <header class="sticky top-0 z-50 bg-primary shadow-md">
+        <div class="container mx-auto px-4 py-3 flex items-center">
+            <div class="flex items-center space-x-4">
+                <div class="w-16 h-16 rounded-full overflow-hidden border-2 border-white">
+                    <img src="https://huggingface.co/spaces/alec321/instasnapsells/resolve/main/images/B (2).png" alt="Profile" class="w-full h-full object-cover" id="profileImage">
+</div>
+                <div>
+                    <h1 class="text-xl font-bold text-white" id="profileName">Caçador de descontos</h1>
+<p class="text-gray-300 text-sm" id="profileHandle">@cacador.de.desconto</p>
+</div>
+            </div>
+        </div>
+    </header>
+    <!-- Search Section -->
+    <section class="container mx-auto px-4 py-8">
+        <div class="max-w-2xl mx-auto relative">
+            <input type="number" placeholder="Buscar por número (1-6)" 
+                   min="1" max="6"
+                   class="w-full px-5 py-4 rounded-lg bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent transition-all duration-200 shadow-sm"
+                   id="searchInput">
+            <i data-feather="search" class="absolute right-4 top-4 text-gray-500 dark:text-gray-400"></i>
+        </div>
+    </section>
+<!-- Products Grid -->
+    <main class="container mx-auto px-4 py-6">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" id="productsGrid">
+            <!-- Products will be dynamically inserted here -->
+        </div>
+    </main>
+
+    <!-- Configuration Section (invisible) -->
+    <div class="hidden" id="config">
+        <!-- Replace these values with your actual data -->
+        <script>
+            const CONFIG = {
+                PROFILE_IMAGE_URL: "https://huggingface.co/spaces/alec321/instasnapsells/resolve/main/images/B (2).png",
+                PROFILE_NAME: "Caçador de descontos",
+                PROFILE_HANDLE: "@cacador.de.desconto",
+AFFILIATE_BASE_URL: "https://example.com/affiliate?id=",
+                PRODUCTS: [
+                    {
+                        id: "prod1",
+                        image: "http://static.photos/technology/320x240/1",
+                        title: "Produto 1",
+                        description: ""
+},
+                    {
+                        id: "prod2",
+                        image: "http://static.photos/technology/320x240/2",
+                        title: "Produto 2",
+                        description: ""
+},
+                    {
+                        id: "prod3",
+                        image: "http://static.photos/sport/320x240/1",
+                        title: "Produto 3",
+                        description: ""
+},
+                    {
+                        id: "prod4",
+                        image: "http://static.photos/technology/320x240/3",
+                        title: "Produto 4",
+                        description: ""
+},
+                    {
+                        id: "prod5",
+                        image: "http://static.photos/technology/320x240/4",
+                        title: "Produto 5",
+                        description: ""
+},
+                    {
+                        id: "prod6",
+                        image: "http://static.photos/sport/320x240/2",
+                        title: "Produto 6",
+                        description: ""
+}
+                ]
+};
+        </script>
+    </div>
+
+    <script>
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            feather.replace();
+            
+            // Set profile data
+            document.getElementById('profileImage').src = CONFIG.PROFILE_IMAGE_URL;
+            document.getElementById('profileName').textContent = CONFIG.PROFILE_NAME;
+            document.getElementById('profileHandle').textContent = CONFIG.PROFILE_HANDLE;
+            
+            // Render products
+            renderProducts(CONFIG.PRODUCTS);
+            // Enhanced Search functionality
+            document.getElementById('searchInput').addEventListener('input', function(e) {
+                const searchTerm = e.target.value.toLowerCase().trim();
+                if (searchTerm.length > 0) {
+                const filteredProducts = CONFIG.PRODUCTS.filter((product, index) => 
+                    (index + 1).toString() === searchTerm
+);
+                    renderProducts(filteredProducts);
+                } else {
+                    renderProducts(CONFIG.PRODUCTS);
+                }
+                
+                // Store search term
+                localStorage.setItem('lastSearch', searchTerm);
+            });
+
+            // Clear search on 'Escape' key
+            document.getElementById('searchInput').addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    this.value = '';
+                    renderProducts(CONFIG.PRODUCTS);
+                    localStorage.removeItem('lastSearch');
+                }
+            });
+            // Load last search if exists and not empty
+            const lastSearch = localStorage.getItem('lastSearch');
+            if(lastSearch && lastSearch.trim().length > 0) {
+                document.getElementById('searchInput').value = lastSearch;
+                const filteredProducts = CONFIG.PRODUCTS.filter(product =>
+                    (index + 1).toString() === lastSearch
+);
+                renderProducts(filteredProducts);
+            } else {
+                renderProducts(CONFIG.PRODUCTS);
+            }
+
+            // Focus search input on '/' key press
+            document.addEventListener('keydown', function(e) {
+                if (e.key === '/' && e.target.tagName !== 'INPUT') {
+                    e.preventDefault();
+                    document.getElementById('searchInput').focus();
+                }
+            });
+});
+        
+        function renderProducts(products) {
+            const grid = document.getElementById('productsGrid');
+            grid.innerHTML = '';
+            
+            products.forEach(product => {
+                const productCard = document.createElement('div');
+                productCard.className = 'product-card bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-md transition-all duration-300 hover:shadow-xl';
+                productCard.innerHTML = `
+                    <div class="h-48 overflow-hidden relative">
+                        <img src="${product.image}" alt="${product.title}" class="w-full h-full object-cover">
+                    </div>
+                    <div class="p-4">
+                        <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-1 text-center">${product.title}</h3>
+<div class="flex flex-col items-center">
+<a href="${CONFIG.AFFILIATE_BASE_URL}${product.id}" 
+                               target="_blank" rel="nofollow noopener noreferrer"
+                               class="w-full px-4 py-2 bg-primary dark:bg-secondary text-white rounded-lg hover:bg-opacity-90 transition-colors duration-200 text-sm text-center">
+                                Comprar Agora
+</a>
+                        </div>
+                    </div>
+`;
+                grid.appendChild(productCard);
+            });
+            
+            feather.replace();
+        }
+    </script>
+</body>
+</html>
